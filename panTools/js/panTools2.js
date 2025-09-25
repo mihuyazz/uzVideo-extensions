@@ -1453,7 +1453,9 @@ class PanPikPak {
             medias.forEach(media => {
                 urls.push(media.media_name,media.link.url)
             })
-            return urls
+            return {
+                urls:urls
+            }
         }
     }
 }
