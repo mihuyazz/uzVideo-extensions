@@ -12,6 +12,7 @@ import {
     panSubClasses,
 } from '../panTools2.js'
 import { axios, qs, base64Decode, base64Encode } from './common.js'
+import {getEnv, setEnv, UZUtils} from "../../../core/core/uzUtils";
 
 // PikPak云盘
 // 作者：你猜
@@ -57,6 +58,7 @@ class PanPikPak {
     async updatePanEnv(key, value) {
         await setEnv(this.uzTag, key, value)
     }
+
     /**
      * 是否支持挂载
      *
@@ -134,7 +136,7 @@ class PanPikPak {
      * @returns {Promise<PanPlayInfo>} 播放地址详情
      */
     async parseVideo(args) {
-        UZUtils.debugLog(args)
+        UZUtils.debugLog("parseVideo==========>"+args.data)
         return await this.getShareUrl(args.data)
     }
 
@@ -158,31 +160,31 @@ class PanPikPak {
 
     uzTag = ''
 
-    async req_proxy(url,mth,header,data){
+    async req_proxy(url, mth, header, data) {
         try {
             let config = {
-                url:url,
-                method:mth || 'get',
-                headers:header || this.headers,
+                url: url,
+                method: mth || 'get',
+                headers: header || this.headers,
             }
-            if(data!==undefined){
+            if (data !== undefined) {
                 config.data = data
             }
             return await axios.request(config)
-        }catch(error){
+        } catch (error) {
             UZUtils.debugLog(error)
         }
 
     }
 
-    async getPass_code_token(url){
+    async getPass_code_token(url) {
         let req_ = await this.req_proxy(url)
         let ck = req_.headers['set-cookie']
         let pass_code_token = ''
-        if(ck.length > 0){
-            this.cookie = ck.map(it=>{
+        if (ck.length > 0) {
+            this.cookie = ck.map(it => {
                 let it_path = it.split(';')[0]
-                if(/passcode_token/.test(it_path)){
+                if (/passcode_token/.test(it_path)) {
                     pass_code_token = it_path.split('=')[1]
                 }
                 return it_path
@@ -191,103 +193,108 @@ class PanPikPak {
         return pass_code_token
     }
 
-    async  getShareRedirect(url){
+    async getShareRedirect(url) {
         let req_ = await this.req_proxy(url)
         let ck = req_.headers['set-cookie']
         let pass_code_token = ''
-        if(ck.length > 0){
-            this.cookie = ck.map(it=>{
+        if (ck.length > 0) {
+            this.cookie = ck.map(it => {
                 let it_path = it.split(';')[0]
-                if(/passcode_token/.test(it_path)){
+                if (/passcode_token/.test(it_path)) {
                     pass_code_token = it_path.split('=')[1]
                 }
                 return it_path
             }).join('; ')
         }
         return {
-            redirect:req_.redirects[0].location,
-            pass_code_token:pass_code_token
+            redirect: req_.redirects[0].location,
+            pass_code_token: pass_code_token
         }
-        
+
     }
 
-    async getSurl(url){
+    async getSurl(url) {
         this.link = url.trim()
         let matches = this.regex.exec(url) === null ? /https:\/\/mypikpak.com\/s\/(.*)/.exec(url) : this.regex.exec(url);
         let share_id = ''
         let parent_id = ''
         if (matches && matches[1]) {
-            if(matches[1].includes('/')){
+            if (matches[1].includes('/')) {
                 share_id = matches[1].split('/')[0]
                 parent_id = matches[1].split('/')[1]
-            }else {
+            } else {
                 share_id = matches[1]
             }
         }
         return {
-            share_id,parent_id
+            share_id, parent_id
         }
     }
 
-    async getShareData(url){
+    async getShareData(url) {
         let list = []
-        if(url.startsWith('http')){
+        if (url.startsWith('http')) {
             let pass_code_token = await this.getPass_code_token(url)
-            let {share_id,parent_id} = await this.getSurl(url)
+            let {share_id, parent_id} = await this.getSurl(url)
             list = await this.getShareList(share_id, parent_id, pass_code_token)
             UZUtils.debugLog(list)
             return {
-                videos:list
+                videos: list
             }
         }
-        if(url.startsWith('magnet')){
-            url = this.share_api+url
-            let {redirect:link,pass_code_token:pass_code_token} = await this.getShareRedirect(url)
-            let {share_id,parent_id} = await this.getSurl(link)
-            list = await this.getShareList(share_id,parent_id,pass_code_token)
+        if (url.startsWith('magnet')) {
+            url = this.share_api + url
+            let {redirect: link, pass_code_token: pass_code_token} = await this.getShareRedirect(url)
+            let {share_id, parent_id} = await this.getSurl(link)
+            list = await this.getShareList(share_id, parent_id, pass_code_token)
             return {
-                videos:list
+                videos: list
             }
         }
 
     }
 
-    async getShareList(share_id,parent_id,pass_code_token){
+    async getShareList(share_id, parent_id, pass_code_token) {
         let x_captcha_token = await this.getCaptcha()
         let header = Object.assign({
-            'x-captcha-token':x_captcha_token,
-            'x-client-id':this.x_client_id,
-            'x-device-id':this.x_device_id
-        },this.headers)
+            'x-captcha-token': x_captcha_token,
+            'x-client-id': this.x_client_id,
+            'x-device-id': this.x_device_id
+        }, this.headers)
         let url = this.api + `/detail?limit=100&thumbnail_size=SIZE_LARGE&order=3&folders_first=true&share_id=${share_id}&parent_id=${parent_id}&pass_code_token=${pass_code_token}`
-        let data = await this.req_proxy(url,'get',header)
-        if(data.status === 200 && data.data.files.length > 0){
+        let data = await this.req_proxy(url, 'get', header)
+        if (data.status === 200 && data.data.files.length > 0) {
             let dirs = []
             let videos = []
             data.data.files.map(item => {
                 if (/folder/.test(item.kind) && item.mime_type === '') {
                     dirs.push({
-                        share_id:share_id,
-                        parent_id:item.id,
-                        pass_code_token:pass_code_token
+                        share_id: share_id,
+                        parent_id: item.id,
+                        pass_code_token: pass_code_token
                     })
                 }
                 if (/file/.test(item.kind) && /video/.test(item.mime_type)) {
                     videos.push({
                         name:item.name,
-                        share_id:share_id,
-                        file_id:item.id,
-                        pass_code_token:pass_code_token
+                        panType: this.getPanType(),
+                        data:{
+                            name: item.name,
+                            share_id: share_id,
+                            file_id: item.id,
+                            panType: this.getPanType(),
+                            pass_code_token: pass_code_token
+                        }
                     })
                 }
             });
-            let result = await Promise.all(dirs.map(async (it) => this.getShareList(it.share_id,it.parent_id,it.pass_code_token)))
+            let result = await Promise.all(dirs.map(async (it) => this.getShareList(it.share_id, it.parent_id, it.pass_code_token)))
             result = result.filter(item => item !== undefined && item !== null).flat()
             return [...videos, ...result.flat()];
         }
     }
 
-    async getCaptcha(){
+    async getCaptcha() {
         let data = JSON.stringify({
             "client_id": "YUMx5nI8ZU8Ap8pm",
             "action": "GET:/drive/v1/share/file_info",
@@ -310,32 +317,35 @@ class PanPikPak {
                 'x-client-id': this.x_client_id,
                 'x-device-id': this.x_device_id
             },
-            data:data
+            data: data
         })
-        if(captcha_data.status === 200){
+        if (captcha_data.status === 200) {
             return captcha_data.data.captcha_token
         }
     }
 
-    async getShareUrl(data){
-        UZUtils.debugLog(data)
-        let {share_id,file_id,pass_code_token} = data;
+    async getShareUrl(data) {
+        let {share_id, file_id, pass_code_token} = data
+        UZUtils.debugLog(share_id, file_id, pass_code_token)
         let x_captcha_token = await this.getCaptcha()
         let header = Object.assign({
-            'x-captcha-token':x_captcha_token,
-            'x-client-id':this.x_client_id,
-            'x-device-id':this.x_device_id
-        },this.headers)
-        let url = this.api+`/file_info?share_id=${share_id}&file_id=${file_id}&pass_code_token=${pass_code_token}`
-        let html = await this.req_proxy(url,'get',header)
-        if(html.status === 200){
+            'x-captcha-token': x_captcha_token,
+            'x-client-id': this.x_client_id,
+            'x-device-id': this.x_device_id
+        }, this.headers)
+        let url = this.api + `/file_info?share_id=${share_id}&file_id=${file_id}&pass_code_token=${pass_code_token}`
+        let html = await this.req_proxy(url, 'get', header)
+        if (html.status === 200) {
             let urls = []
             let medias = html.data.file_info.medias
             medias.forEach(media => {
-                urls.push(media.media_name,media.link.url)
+                urls.push({
+                    name:media.media_name,
+                    url:media.link.url
+                })
             })
             return {
-                urls:urls
+                urls: urls
             }
         }
     }
