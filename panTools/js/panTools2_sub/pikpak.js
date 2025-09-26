@@ -13,8 +13,6 @@ import {
 } from '../panTools2.js'
 import { axios, qs, base64Decode, base64Encode } from './common.js'
 
-// ignore
-
 // PikPak云盘
 // 作者：你猜
 class PanPikPak {
@@ -35,7 +33,7 @@ class PanPikPak {
         // MARK: 需要实现
         let pan = new PanPikPak()
         pan.uzTag = args.uzTag
-        // pan.saveDirName = args.saveDirName
+        pan.saveDirName = args.saveDirName
         return pan
     }
 
@@ -117,11 +115,7 @@ class PanPikPak {
      * @returns {Promise<boolean>} 返回一个 Promise，resolve 返回 true 表示可以解析，false 表示不能解析
      */
     async canParse(args) {
-        if (args.url.includes('mypikpak.com') || args.url.startsWith('magnet')) {
-            return true
-        } else {
-            return false
-        }
+        return args.url.includes('mypikpak.com') || args.url.includes('magnet');
     }
 
     /**
@@ -140,6 +134,7 @@ class PanPikPak {
      * @returns {Promise<PanPlayInfo>} 播放地址详情
      */
     async parseVideo(args) {
+        UZUtils.debugLog(args)
         return await this.getShareUrl(args.data)
     }
 
@@ -149,7 +144,6 @@ class PanPikPak {
     async clearPanSaveDir() {
     }
 
-    ////////////////////////////////////////
     constructor() {
         this.regex = /https:\/\/mypikpak.com\/s\/(.*)\?act=play/
         this.api = 'https://api-drive.mypikpak.com/drive/v1/share';
@@ -176,14 +170,14 @@ class PanPikPak {
             }
             return await axios.request(config)
         }catch(error){
-            console.log(error)
+            UZUtils.debugLog(error)
         }
 
     }
 
     async getPass_code_token(url){
         let req_ = await this.req_proxy(url)
-        let ck = req_.headers.getSetCookie()
+        let ck = req_.headers['set-cookie']
         let pass_code_token = ''
         if(ck.length > 0){
             this.cookie = ck.map(it=>{
@@ -199,8 +193,7 @@ class PanPikPak {
 
     async  getShareRedirect(url){
         let req_ = await this.req_proxy(url)
-        let ck = req_.headers.getSetCookie()
-        let relink = ''
+        let ck = req_.headers['set-cookie']
         let pass_code_token = ''
         if(ck.length > 0){
             this.cookie = ck.map(it=>{
@@ -211,13 +204,11 @@ class PanPikPak {
                 return it_path
             }).join('; ')
         }
-        if(req_.request?.path && req_.request?.path !== ''){
-            relink = req_.request.path
-            return {
-                redirect:relink,
-                pass_code_token:pass_code_token
-            }
+        return {
+            redirect:req_.redirects[0].location,
+            pass_code_token:pass_code_token
         }
+        
     }
 
     async getSurl(url){
@@ -239,19 +230,24 @@ class PanPikPak {
     }
 
     async getShareData(url){
-        let files = {}
+        let list = []
         if(url.startsWith('http')){
             let pass_code_token = await this.getPass_code_token(url)
             let {share_id,parent_id} = await this.getSurl(url)
-            files['网盘'] = await this.getShareList(share_id, parent_id, pass_code_token)
-            return files
+            list = await this.getShareList(share_id, parent_id, pass_code_token)
+            UZUtils.debugLog(list)
+            return {
+                videos:list
+            }
         }
         if(url.startsWith('magnet')){
             url = this.share_api+url
             let {redirect:link,pass_code_token:pass_code_token} = await this.getShareRedirect(url)
             let {share_id,parent_id} = await this.getSurl(link)
-            files['磁力'] = await this.getShareList(share_id,parent_id,pass_code_token)
-            return files
+            list = await this.getShareList(share_id,parent_id,pass_code_token)
+            return {
+                videos:list
+            }
         }
 
     }
@@ -321,7 +317,9 @@ class PanPikPak {
         }
     }
 
-    async getShareUrl(share_id,file_id,pass_code_token){
+    async getShareUrl(data){
+        UZUtils.debugLog(data)
+        let {share_id,file_id,pass_code_token} = data;
         let x_captcha_token = await this.getCaptcha()
         let header = Object.assign({
             'x-captcha-token':x_captcha_token,
@@ -336,7 +334,9 @@ class PanPikPak {
             medias.forEach(media => {
                 urls.push(media.media_name,media.link.url)
             })
-            return urls
+            return {
+                urls:urls
+            }
         }
     }
 }
