@@ -1,9 +1,9 @@
 [
   {
-    "name": "夸克|UC|天翼|123|百度|解析 综合扩展",
-    "version": 31,
+    "name": "夸克|UC|天翼|123|百度|PikPak|解析 综合扩展",
+    "version": 34,
     "remark": "iOS14 以上版本可用,App v1.6.54 及以上版本可用",
-    "env": "百度网盘Cookie##用于播放百度网盘视频&&UCCookie##用于播放UC网盘视频&&夸克Cookie##用于播放Quark网盘视频&&转存文件夹名称##在各网盘转存文件时使用的文件夹名称&&123网盘账号##用于播放123网盘视频&&123网盘密码##用于播放123网盘视频&&天翼网盘账号##用于播放天翼网盘视频&&天翼网盘密码##用于播放天翼网盘视频&&采集解析地址##内置两个，失效不要反馈。格式：名称1@地址1;名称2@地址2",
+    "env": "百度网盘Cookie##用于播放百度网盘视频&&UCCookie##用于播放UC网盘视频&&夸克Cookie##用于播放Quark网盘视频&&转存文件夹名称##在各网盘转存文件时使用的文件夹名称&&123网盘账号##用于播放123网盘视频&&123网盘密码##用于播放123网盘视频&&天翼网盘账号##用于播放天翼网盘视频&&天翼网盘密码##用于播放天翼网盘视频&&采集解析地址##内置两个，失效不要反馈。格式：名称1@地址1;名称2@地址2&&PikPak邮箱##用于获取PikPak登录&&PikPak密码##用于PikPak登录&&PiKPakToken##用于存储登录信息",
     "order": "A",
     "api": "panTools/js/panTools2.js",
     "type": 300
@@ -253,12 +253,13 @@
     "type": 101
   },
   {
-    "name": "[直] 修罗",
+    "name": "[直] 韩剧",
     "version": 2,
-    "webSite": "https://xl01.com.de",
+    "webSite": "https://www.hanjukankan.com",
+    "instance": "hjkk20240624",
     "order": "B",
-    "api": "vod/js/Zhi_biliys.js",
-    "type": 101
+    "api": "vod/js/Zhi_hjkk.js",
+    "type": 100
   },
   {
     "name": "[直] 欧乐",
@@ -270,13 +271,12 @@
     "type": 100
   },
   {
-    "name": "[直] 韩剧",
+    "name": "[直] 修罗",
     "version": 2,
-    "webSite": "https://www.hanjukankan.com",
-    "instance": "hjkk20240624",
+    "webSite": "https://xl01.com.de",
     "order": "B",
-    "api": "vod/js/Zhi_hjkk.js",
-    "type": 100
+    "api": "vod/js/Zhi_biliys.js",
+    "type": 101
   },
   {
     "name": "[直] 瓜子¹",
@@ -326,6 +326,30 @@
     "type": 101
   },
   {
+    "name": "[嗅] 八号影视",
+    "version": 1,
+    "webSite": "https://www.bahaotv.com",
+    "order": "C",
+    "api": "vod/js/Xiu_bhys.js",
+    "type": 101
+  },
+  {
+    "name": "[嗅] 风车动漫",
+    "version": 1,
+    "webSite": "https://www.tt776b.com",
+    "order": "C",
+    "api": "vod/js/Xiu_fcdm.js",
+    "type": 101
+  },
+  {
+    "name": "[嗅] 樱花动漫",
+    "version": 1,
+    "webSite": "https://www.vdm5.com",
+    "order": "C",
+    "api": "vod/js/Xiu_yhdm.js",
+    "type": 101
+  },
+  {
     "name": "[嗅] MX动漫",
     "version": 1,
     "webSite": "https://www.mxdm6.com",
@@ -339,30 +363,6 @@
     "webSite": "https://www.ntdm9.com",
     "order": "C",
     "api": "vod/js/Xiu_ntdm.js",
-    "type": 101
-  },
-  {
-    "name": "[嗅] 八号影视",
-    "version": 1,
-    "webSite": "https://www.bahaotv.com",
-    "order": "C",
-    "api": "vod/js/Xiu_bhys.js",
-    "type": 101
-  },
-  {
-    "name": "[嗅] 樱花动漫",
-    "version": 1,
-    "webSite": "https://www.vdm5.com",
-    "order": "C",
-    "api": "vod/js/Xiu_yhdm.js",
-    "type": 101
-  },
-  {
-    "name": "[嗅] 风车动漫",
-    "version": 1,
-    "webSite": "https://www.tt776b.com",
-    "order": "C",
-    "api": "vod/js/Xiu_fcdm.js",
     "type": 101
   },
   {

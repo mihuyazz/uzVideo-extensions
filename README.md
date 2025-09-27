@@ -14,7 +14,7 @@
 # 订阅
 
 ```
-https://raw.githubusercontent.com/YYDS678/uzVideo-extensions/refs/heads/dev/uzAio.zip
+https://raw.githubusercontent.com/mihuyazz/uzVideo-extensions/refs/heads/main/uzAio.zip
 ```
 
 # 添加方式
@@ -47,4 +47,3 @@ uz 影视 -> 设置 -> 数据管理 -> 订阅 -> + -> 输入链接 -> 确定
 // ignore
 
 ```
-# uzVideo-extensions
