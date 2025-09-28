@@ -1,7 +1,7 @@
-//@name:夸克|UC|天翼|123|百度|PikPak|解析 综合扩展
+//@name:夸克|UC|天翼|123|百度|移动|pikpak|解析
 //@version:34
 //@remark:iOS14 以上版本可用,App v1.6.54 及以上版本可用
-//@env:百度网盘Cookie##用于播放百度网盘视频&&UCCookie##用于播放UC网盘视频&&夸克Cookie##用于播放Quark网盘视频&&转存文件夹名称##在各网盘转存文件时使用的文件夹名称&&123网盘账号##用于播放123网盘视频&&123网盘密码##用于播放123网盘视频&&天翼网盘账号##用于播放天翼网盘视频&&天翼网盘密码##用于播放天翼网盘视频&&PikPak邮箱##用于获取PikPak登录&&PikPak密码##用于PikPak登录&&PiKPakToken##用于存储登录信息&&采集解析地址##内置两个，失效不要反馈。格式：名称1@地址1;名称2@地址2
+//@env:百度网盘Cookie##用于播放百度网盘视频&&UCCookie##用于播放UC网盘视频&&夸克Cookie##用于播放Quark网盘视频&&转存文件夹名称##在各网盘转存文件时使用的文件夹名称&&123网盘账号##用于播放123网盘视频&&123网盘密码##用于播放123网盘视频&&天翼网盘账号##用于播放天翼网盘视频&&天翼网盘密码##用于播放天翼网盘视频&&PikPak邮箱##用于获取PikPak登录&&PikPak密码##用于PikPak登录&&PikPakToken##用于存储登录信息&&采集解析地址##内置两个，失效不要反馈。格式：名称1@地址1;名称2@地址2
 //@order: A
 
 // ignore
@@ -42,7 +42,7 @@ import {
     formatBackData,
 } from '../../core/core/uzUtils.js'
 
-import {cheerio, Crypto, Encrypt, JSONbig} from '../../core/core/uz3lib.js'
+import { cheerio, Crypto, Encrypt, JSONbig } from '../../core/core/uz3lib.js'
 // ignore
 
 /**
@@ -244,7 +244,6 @@ class PanTools {
     }
 
     _isInitSuccess = false
-
     async initHandlers() {
         var dirName = await getEnv(this.uzTag, '转存文件夹名称')
         if (dirName == null || dirName === '') {
@@ -259,8 +258,7 @@ class PanTools {
                 })
                 handler.uzTag = this.uzTag
                 this.panToolsHandlers.push(handler)
-            } catch (error) {
-            }
+            } catch (error) {}
         }
         this._isInitSuccess = true
     }
@@ -291,8 +289,7 @@ class PanTools {
         for (let i = 0; i < this.panToolsHandlers.length; i++) {
             try {
                 await this.panToolsHandlers[i].clearPanSaveDir()
-            } catch (error) {
-            }
+            } catch (error) {}
         }
     }
 
@@ -316,8 +313,7 @@ class PanTools {
                     data.can = true
                     data.panType = this.panToolsHandlers[i].getPanType()
                 }
-            } catch (error) {
-            }
+            } catch (error) {}
         }
         return formatBackData(data)
     }
@@ -329,12 +325,11 @@ class PanTools {
     async getPanTypes() {
         await this.checkState()
         let panTypes = []
-        let data = {panTypes: panTypes}
+        let data = { panTypes: panTypes }
         for (let i = 0; i < this.panToolsHandlers.length; i++) {
             try {
                 panTypes.push(this.panToolsHandlers[i].getPanType())
-            } catch (error) {
-            }
+            } catch (error) {}
         }
         data.panTypes = panTypes
         return formatBackData(data)
@@ -358,8 +353,7 @@ class PanTools {
                     })
                     return formatBackData(data)
                 }
-            } catch (error) {
-            }
+            } catch (error) {}
         }
 
         let data = new PanListDetail()
@@ -377,13 +371,11 @@ class PanTools {
             try {
                 let panType = await this.panToolsHandlers[i].getPanType()
                 if (panType == item.panType) {
-                    UZUtils.debugLog('开始解析网盘类型:'+panType)
-                    UZUtils.debugLog('参数传递为:'+item)
                     let data = await this.panToolsHandlers[i].parseVideo(item)
                     return formatBackData(data)
                 }
             } catch (error) {
-                return formatBackData({error: error.toString()})
+                return formatBackData({ error: error.toString() })
             }
         }
         const data = new PanPlayInfo()
@@ -407,8 +399,7 @@ class PanTools {
                 if (item) {
                     list.push(item)
                 }
-            } catch (error) {
-            }
+            } catch (error) {}
         }
 
         return formatBackData(list)
@@ -431,11 +422,10 @@ class PanTools {
                         return formatBackData(item)
                     }
                 }
-            } catch (error) {
-            }
+            } catch (error) {}
         }
 
-        return formatBackData({data: [], error: ''})
+        return formatBackData({ data: [], error: '' })
     }
 
     /**
@@ -462,10 +452,9 @@ class PanTools {
                         return formatBackData(item)
                     }
                 }
-            } catch (error) {
-            }
+            } catch (error) {}
         }
-        return formatBackData({data: [], error: ''})
+        return formatBackData({ data: [], error: '' })
     }
 
     /**
@@ -487,8 +476,7 @@ class PanTools {
                         return formatBackData(item)
                     }
                 }
-            } catch (error) {
-            }
+            } catch (error) {}
         }
 
         return formatBackData(playData)
@@ -763,11 +751,11 @@ class PanBaidu {
             // 生成签名 - 完全按照 baidu.js 的实现
             const rand = this.sha1(
                 this.sha1(bduss) +
-                    uid +
-                    'ebrcUYiuxaZv2XGu7KIYKxUrqfnOfpDF' +
-                    time +
-                    devuid +
-                    '11.30.2ae5821440fab5e1a61a025f014bd8972'
+                uid +
+                'ebrcUYiuxaZv2XGu7KIYKxUrqfnOfpDF' +
+                time +
+                devuid +
+                '11.30.2ae5821440fab5e1a61a025f014bd8972'
             )
 
             const apiPath = `share/list?shareid=${shareid}&uk=${uk}&fid=${fsid}&sekey=${randsk}&origin=dlna&devuid=${devuid}&clienttype=1&channel=android_12_zhao_bd-netdisk_1024266h&version=11.30.2&time=${time}&rand=${rand}`
@@ -1223,8 +1211,8 @@ class qs {
             } else {
                 pairs.push(
                     encodeURIComponent(fullKey) +
-                        '=' +
-                        encodeURIComponent(value)
+                    '=' +
+                    encodeURIComponent(value)
                 )
             }
         }
@@ -2365,9 +2353,9 @@ class Pan189 {
 
                 cookies +=
                     '; ' +
-                        resp.headers?.['set-cookie']
-                            ?.map((it) => it.split(';')[0])
-                            .join(';') ?? ''
+                    resp.headers?.['set-cookie']
+                        ?.map((it) => it.split(';')[0])
+                        .join(';') ?? ''
                 this.cookie = cookies
 
                 await UZUtils.setStorage({
@@ -2725,24 +2713,762 @@ class Pan189 {
 
 panSubClasses.push(Pan189)
 
+// MARK: panYun.js
+// 请勿直接修改，请修改 panYun.js 文件
+// prettier-ignore
+
+
+// 移动云盘（139邮箱云盘）
+// 抄自 https://github.com/hjdhnx/drpy-node/
+
+class PanYun {
+    /**
+     * 运行时标识符，会自动赋值一次，请勿修改
+     */
+    uzTag = ''
+
+    /**
+     * 获取实例
+     *
+     * @param {Object} args - 函数参数对象
+     * @param {string} args.uzTag - 运行时标识符
+     * @param {string} args.saveDirName - 保存目录名称
+     * @returns {Promise<PanYun>} 返回当前模块类实例
+     */
+    static async getInstance(args) {
+        let pan = new PanYun()
+        pan.uzTag = args.uzTag
+        pan.saveDirName = args.saveDirName
+        await pan.init()
+        return pan
+    }
+
+    /**
+     * 读取环境变量 key 为主文件中 env 的声明
+     * 可直接调用
+     * @param {String} key
+     * @returns
+     */
+    async getPanEnv(key) {
+        // 当前基本功能不需要环境变量，仅在下载功能时按需获取
+        try {
+            return await getEnv(this.uzTag, key)
+        } catch (error) {
+            return null
+        }
+    }
+
+    /**
+     * 更新环境变量 key 为主文件中 env 的声明
+     * 可直接调用
+     * @param {String} key
+     * @param {String} value
+     * @returns
+     */
+    async updatePanEnv(key, value) {
+        // 保留接口兼容性，实际可选使用
+        try {
+            await setEnv(this.uzTag, key, value)
+        } catch (error) {
+            // 忽略环境变量设置错误
+        }
+    }
+
+    /**
+     * 是否支持挂载
+     *
+     * @returns {Promise<PanMount>} 返回一个PanMount实例的Promise对象
+     */
+    async supportPanMount() {
+        return null
+    }
+
+    /**
+     * 获取网盘根目录
+     * @returns {@Promise<{data:[PanMountListData],error:string}>}
+     */
+    async getPanMountRootDir() {
+        return {}
+    }
+
+    /**
+     * 获取网盘子目录
+     * @param {object} args
+     * @param {PanMountListData.data} args.data PanMountListData 的 data
+     * @param {number} args.page 页码
+     * @returns {@Promise<{data:[PanMountListData],error:string}>}
+     */
+    async getPanMountSubDir(args) {
+        return {}
+    }
+
+    /**
+     * 获取网盘挂载文件真实地址
+     * @param {PanMountListData.data} args.data PanMountListData 的 data
+     * @returns {@Promise<PanPlayInfo>}
+     */
+    async getPanMountFile(args) {
+        return new PanPlayInfo()
+    }
+
+    /**
+     * 返回网盘类型 PanType ,请勿与其他平台的冲突
+     * @param {Object} args - 函数参数对象
+     *
+     * @returns {string} 返回网盘类型名称
+     */
+    getPanType(args) {
+        return '移动'
+    }
+
+    /**
+     * 是否可以解析分享链接
+     * @param {Object} args - 函数参数对象
+     * @param {string} args.url - 当前分享链接
+     * @returns {Promise<boolean>} 返回一个 Promise，resolve 返回 true 表示可以解析，false 表示不能解析
+     */
+    async canParse(args) {
+        return args.url.includes('yun.139.com') || args.url.includes('caiyun.139.com')
+    }
+
+    /**
+     * 解析分享链接并获取文件列表
+     * @param {Object} args - 包含分享链接信息的参数对象
+     * @param {string} args.url - 分享链接URL
+     * @returns {Promise<PanListDetail>} 返回解析后的文件列表数据
+     */
+    async parseShareUrl(args) {
+        return await this.getShareData(args.url)
+    }
+
+    /**
+     * 获取视频播放地址
+     * @param {PanVideoItem} args - 函数参数对象
+     * @returns {Promise<PanPlayInfo>} 播放地址详情
+     */
+    async parseVideo(args) {
+        return await this.getPlayUrl(args.data)
+    }
+
+    /**
+     * 清除Pan保存目录
+     */
+    async clearPanSaveDir() {
+        // 调用清除保存目录的方法
+    }
+
+    ////////////////////////////////////////
+    constructor() {
+        // 移动云盘分享链接的正则表达式
+        this.regex = /https:\/\/yun.139.com\/shareweb\/#\/w\/i\/([^&]+)/
+        // AES加密密钥
+        this.x = Crypto.enc.Utf8.parse("PVGDwmcvfs1uV3d1")
+        // API基础URL
+        this.baseUrl = 'https://share-kd-njs.yun.139.com/yun-share/richlifeApp/devapp/IOutLink/'
+        // 备用API地址（万一主地址失效）
+        this.alternativeUrls = [
+            'https://cloud.139.com/yun-share/richlifeApp/devapp/IOutLink/',
+            'https://yun.139.com/yun-share/richlifeApp/devapp/IOutLink/',
+            'https://share.yun.139.com/yun-share/richlifeApp/devapp/IOutLink/'
+        ]
+        // 默认请求头
+        this.baseHeader = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json',
+            'hcy-cool-flag': '1',
+            'x-deviceinfo': '||3|12.27.0|chrome|131.0.0.0|5c7c68368f048245e1ce47f1c0f8f2d0||windows 10|1536X695|zh-CN|||',
+            'Origin': 'https://yun.139.com',
+            'Referer': 'https://yun.139.com/'
+        }
+        // 分享链接ID
+        this.linkID = ''
+        // 缓存对象，用于存储API响应结果
+        this.cache = {}
+        // 授权token
+        this.authorization = ''
+        // 账号信息
+        this.account = ''
+        this.cookie = ''
+    }
+
+    /**
+     * 初始化移动云盘驱动
+     */
+    async init() {
+        // 基本功能（分享链接解析、播放）不需要环境变量
+        // Cookie和账号信息仅在下载功能时按需获取
+    }
+
+    /**
+     * 数据加密方法
+     *
+     * 使用AES-CBC模式对数据进行加密，支持字符串和对象类型
+     *
+     * @param {string|object} data - 需要加密的数据
+     * @returns {string} Base64编码的加密结果
+     */
+    encrypt(data) {
+        try {
+            // 生成随机初始化向量 - 使用 fallback 方案
+            let t, n = ""
+            try {
+                // 尝试使用标准方式
+                t = Crypto.lib.WordArray.random(16)
+            } catch (randomError) {
+                // Fallback: 手动生成16字节(4个words)的随机数组
+                const words = []
+                for (let i = 0; i < 4; i++) {
+                    // 生成32位随机数
+                    words[i] = Math.floor(Math.random() * 0x100000000)
+                }
+                t = Crypto.lib.WordArray.create(words, 16)
+            }
+
+            if ("string" == typeof data) {
+                // 字符串类型加密
+                const o = Crypto.enc.Utf8.parse(data)
+                n = Crypto.AES.encrypt(o, this.x, {iv: t, mode: Crypto.mode.CBC, padding: Crypto.pad.Pkcs7})
+            } else if (typeof data === 'object' && data !== null) {
+                // 对象类型先转JSON再加密
+                const a = JSON.stringify(data), s = Crypto.enc.Utf8.parse(a)
+                n = Crypto.AES.encrypt(s, this.x, {iv: t, mode: Crypto.mode.CBC, padding: Crypto.pad.Pkcs7})
+            }
+
+            // 返回IV和密文的Base64编码
+            const result = Crypto.enc.Base64.stringify(t.concat(n.ciphertext))
+            return result
+        } catch (error) {
+            throw error
+        }
+    }
+
+    /**
+     * 数据解密方法
+     *
+     * 解密使用AES-CBC模式加密的数据
+     *
+     * @param {string} data - Base64编码的加密数据
+     * @returns {string} 解密后的原始数据
+     */
+    decrypt(data) {
+        try {
+            // 解析Base64数据
+            const t = Crypto.enc.Base64.parse(data), n = t.clone(), i = n.words.splice(4)
+
+            // 分离IV和密文
+            n.init(n.words), t.init(i)
+            const o = Crypto.enc.Base64.stringify(t)
+
+            // 执行AES解密
+            const a = Crypto.AES.decrypt(o, this.x, {iv: n, mode: Crypto.mode.CBC, padding: Crypto.pad.Pkcs7})
+            const s = a.toString(Crypto.enc.Utf8)
+
+            return s.toString()
+        } catch (error) {
+            throw error
+        }
+    }
+
+    /**
+     * 从分享URL中提取分享ID
+     *
+     * 支持多种格式的移动云盘分享链接
+     *
+     * @async
+     * @param {string} url - 移动云盘分享链接
+     * @returns {Promise<void>}
+     */
+    async getShareID(url) {
+        // 支持多种格式的分享链接
+        const patterns = [
+            this.regex,                                                    // yun.139.com/shareweb/#/w/i/
+            /https:\/\/caiyun\.139\.com\/m\/i\?([^&]+)/,                   // caiyun.139.com/m/i?
+            /https:\/\/caiyun\.139\.com\/w\/i\/([^&\/]+)/                  // caiyun.139.com/w/i/
+        ]
+
+        let matches = null
+        for (const pattern of patterns) {
+            matches = pattern.exec(url)
+            if (matches && matches[1]) {
+                this.linkID = matches[1]
+                return
+            }
+        }
+    }
+
+    /**
+     * 获取分享信息
+     *
+     * 通过API获取指定目录的分享信息，包含文件和文件夹列表
+     *
+     * @async
+     * @param {string} pCaID - 父目录ID，'root'表示根目录
+     * @returns {Promise<object|null>} 分享信息对象，失败时返回null
+     */
+    async getShareInfo(pCaID) {
+        if (!this.linkID) {
+            return null
+        }
+        // 检查缓存
+        const cacheKey = `${this.linkID}-${pCaID}`
+        if (this.cache[cacheKey]) {
+            return this.cache[cacheKey]
+        }
+        // 构造请求数据
+        const requestPayload = {
+            "getOutLinkInfoReq": {
+                "account": "",
+                "linkID": this.linkID,
+                "passwd": "",
+                "caSrt": 1,
+                "coSrt": 1,
+                "srtDr": 0,
+                "bNum": 1,
+                "pCaID": pCaID,
+                "eNum": 200
+            },
+            "commonAccountInfo": {"account": "", "accountType": 1}
+        }
+
+        const jsonString = JSON.stringify(requestPayload)
+        const encryptedData = this.encrypt(jsonString)
+
+        // 使用原始字符串格式发送请求
+        let data = encryptedData
+
+        try {
+            // 尝试多个API地址
+            let resp = null
+            const urlsToTry = [this.baseUrl, ...this.alternativeUrls]
+
+            for (let i = 0; i < urlsToTry.length; i++) {
+                const currentUrl = urlsToTry[i]
+
+                // 发送API请求 - 直接使用 req() 函数，绕过有问题的 axios 包装
+                try {
+                    resp = await req(currentUrl + 'getOutLinkInfoV6', {
+                        method: 'POST',
+                        headers: this.baseHeader,
+                        data: data,
+                        responseType: ReqResponseType.plain
+                    })
+
+                    if (resp && resp.code !== undefined) {
+                        break // 成功就退出循环
+                    } else {
+                        resp = { code: 500, data: null, error: '无效响应' }
+                    }
+                } catch (reqError) {
+                    resp = { code: 500, data: null, error: `网络请求失败: ${reqError.message}` }
+
+                    // 如果不是最后一个地址，继续尝试下一个
+                    if (i < urlsToTry.length - 1) {
+                        continue
+                    } else {
+                        break
+                    }
+                }
+            }
+
+            // 检查响应是否成功
+            const statusCode = resp?.code
+
+            // 检查是否有数据
+            if (!resp || resp.data === null || resp.data === undefined) {
+                return null
+            }
+
+            if (!statusCode || statusCode !== 200) {
+                return null
+            }
+
+            // 解密响应数据
+            const decryptedData = this.decrypt(resp.data)
+
+            // 特殊处理：如果服务器返回 "null" 字符串
+            if (resp.data === "null") {
+                return null
+            }
+
+            // 检查解密结果是否为空
+            if (!decryptedData || decryptedData.trim() === '') {
+                // 如果原始数据不是加密格式，尝试直接解析
+                if (resp.data && resp.data !== "null" && resp.data.length > 10) {
+                    try {
+                        const directJson = JSON.parse(resp.data)
+                        if (directJson.data) {
+                            return directJson.data
+                        }
+                    } catch (directParseError) {
+                        // 忽略解析错误
+                    }
+                }
+
+                return null
+            }
+
+            let json
+            try {
+                const parsedData = JSON.parse(decryptedData)
+                json = parsedData.data
+            } catch (jsonError) {
+                return null
+            }
+
+            // 缓存结果
+            this.cache[cacheKey] = json
+            return json
+        } catch (error) {
+            return null
+        }
+    }
+
+    /**
+     * 获取分享数据
+     *
+     * 解析分享链接或目录ID，获取完整的文件结构
+     *
+     * @async
+     * @param {string} url - 分享链接或目录ID
+     * @returns {Promise<object>} 文件结构对象，按目录名分组
+     */
+    async getShareData(url) {
+        try {
+            if (!url) {
+                return { videos: [], error: '链接不能为空' }
+            }
+
+            // 判断是URL还是目录ID
+            const isValidUrl = url.startsWith('http')
+            let pCaID = isValidUrl ? 'root' : url
+
+            if (isValidUrl) {
+                await this.getShareID(url)
+            }
+
+            let file = {}
+            // 获取文件信息
+            let fileInfo = await this.getShareFile(pCaID)
+
+            if (fileInfo && Array.isArray(fileInfo)) {
+                // 并发获取所有文件的下载链接
+                await Promise.all(fileInfo.map(async (item) => {
+                    if (!(item.name in file)) {
+                        file[item.name] = []
+                    }
+                    let filelist = await this.getShareUrl(item.path)
+                    if (filelist && filelist.length > 0) {
+                        file[item.name].push(...filelist)
+                    }
+                }))
+            }
+
+            // 清理空的文件夹
+            for (let key in file) {
+                if (file[key].length === 0) {
+                    delete file[key]
+                }
+            }
+
+            // 如果没有找到文件，尝试获取根目录文件
+            if (Object.keys(file).length === 0) {
+                file['root'] = await this.getShareUrl(pCaID)
+                if (file['root'] && Array.isArray(file['root'])) {
+                    file['root'] = file['root'].filter(item => item && Object.keys(item).length > 0)
+                }
+            }
+
+            // 标准化返回格式
+            let videos = []
+            for (let key in file) {
+                for (let i = 0; i < file[key]?.length; i++) {
+                    const element = file[key][i]
+
+                    // 构建 remark，与其他网盘保持一致的格式（只显示文件大小）
+                    let remark = '[移动]'  // 默认显示网盘类型
+                    if (element.size && element.size > 0) {
+                        // 使用与pan189.js相同的格式化逻辑
+                        let size = element.size / 1024 / 1024  // 转换为 MB
+                        let unit = 'MB'
+                        if (size >= 1000) {
+                            size = size / 1024  // 转换为 GB
+                            unit = 'GB'
+                        }
+                        size = size.toFixed(1)
+                        remark = `[${size}${unit}]`  // 只显示文件大小，与其他网盘保持一致
+                    }
+
+                    videos.push({
+                        name: element.name,
+                        panType: this.getPanType(),
+                        remark: remark,
+                        data: element,
+                    })
+                }
+            }
+
+            return {
+                videos: videos,
+                error: '',
+            }
+        } catch (error) {
+            return {
+                videos: [],
+                error: error.toString(),
+            }
+        }
+    }
+
+    /**
+     * 获取分享文件列表
+     *
+     * 递归获取指定目录下的所有文件和子目录
+     *
+     * @async
+     * @param {string} pCaID - 目录ID或分享链接
+     * @returns {Promise<Array|null>} 文件列表数组，失败时返回null
+     */
+    async getShareFile(pCaID) {
+        if (!pCaID) {
+            return null
+        }
+        try {
+            // 处理URL格式
+            const isValidUrl = pCaID.startsWith('http')
+            pCaID = isValidUrl ? 'root' : pCaID
+            // 获取目录信息
+            const json = await this.getShareInfo(pCaID)
+            if (!json || !json.caLst) {
+                return null
+            }
+            const caLst = json?.caLst
+            const names = caLst.map(it => it.caName)
+            const rootPaths = caLst.map(it => it.path)
+            // 过滤不需要的目录
+            const filterRegex = /App|活动中心|免费|1T空间|免流/
+            const videos = []
+            if (caLst && caLst.length > 0) {
+                // 添加符合条件的目录
+                names.forEach((name, index) => {
+                    if (!filterRegex.test(name)) {
+                        videos.push({name: name, path: rootPaths[index]})
+                    }
+                })
+                // 递归获取子目录内容
+                let result = await Promise.all(rootPaths.map(async (path) => this.getShareFile(path)))
+                result = result.filter(item => item !== undefined && item !== null)
+                return [...videos, ...result.flat()]
+            }
+        } catch (error) {
+            return null
+        }
+    }
+
+    /**
+     * 获取分享文件的下载链接
+     *
+     * 获取指定目录下所有视频文件的下载信息
+     *
+     * @async
+     * @param {string} pCaID - 目录ID
+     * @returns {Promise<Array|null>} 文件下载信息数组，失败时返回null
+     */
+    async getShareUrl(pCaID) {
+        try {
+            const json = await this.getShareInfo(pCaID)
+            if (!json || !('coLst' in json)) {
+                return null
+            }
+            const coLst = json.coLst
+            if (coLst !== null) {
+                // 过滤出视频文件（coType === 3）
+                const filteredItems = coLst.filter(it => it && it.coType === 3)
+                return filteredItems.map(it => ({
+                    name: it.coName,
+                    contentId: it.path,
+                    linkID: this.linkID,
+                    size: it.coSize || 0  // 添加文件大小信息
+                }))
+            } else if (json.caLst !== null) {
+                // 递归处理子目录
+                const rootPaths = json.caLst.map(it => it.path)
+                let result = await Promise.all(rootPaths.map(path => this.getShareUrl(path)))
+                result = result.filter(item => item && item.length > 0)
+                return result.flat()
+            }
+        } catch (error) {
+            return null
+        }
+    }
+
+    /**
+     * 获取视频播放地址
+     * @param {Object} data - 视频数据对象
+     * @returns {Promise<Object>} 播放地址信息
+     */
+    async getPlayUrl(data) {
+        try {
+            // 获取播放链接
+            const playUrl = await this.getSharePlay(data.contentId, data.linkID)
+
+            if (!playUrl) {
+                // 如果播放链接获取失败，尝试获取下载链接
+                const downloadUrl = await this.getDownload(data.contentId, data.linkID)
+                if (downloadUrl) {
+                    return {
+                        urls: [{
+                            name: '下载',
+                            url: downloadUrl,
+                        }],
+                        headers: {},
+                    }
+                }
+
+                return {
+                    urls: [],
+                    error: '获取播放地址失败',
+                }
+            }
+
+            return {
+                urls: [{
+                    name: '播放',
+                    url: playUrl,
+                }],
+                headers: {},
+            }
+        } catch (error) {
+            return {
+                urls: [],
+                error: error.toString(),
+            }
+        }
+    }
+
+    /**
+     * 获取文件播放链接
+     *
+     * 通过contentId和linkID获取文件的直接播放链接
+     *
+     * @async
+     * @param {string} contentId - 文件内容ID
+     * @param {string} linkID - 分享链接ID
+     * @returns {Promise<string|undefined>} 播放链接，失败时返回undefined
+     */
+    async getSharePlay(contentId, linkID) {
+        // 构造请求数据
+        let data = {
+            "getContentInfoFromOutLinkReq": {
+                "contentId": contentId.split('/')[1],
+                "linkID": linkID,
+                "account": ""
+            },
+            "commonAccountInfo": {
+                "account": "",
+                "accountType": 1
+            }
+        }
+        // 发送API请求
+        let resp = await req(this.baseUrl + 'getContentInfoFromOutLink', {
+            method: 'POST',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Encoding': 'gzip, deflate, br, zstd',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: ReqResponseType.plain
+        })
+        if (resp.code === 200 && resp.data) {
+            // getContentInfoFromOutLink API 返回未加密的JSON数据
+            let responseData
+            try {
+                // 先尝试直接解析JSON（如果已经是对象就直接使用）
+                responseData = typeof resp.data === 'string' ? JSON.parse(resp.data) : resp.data
+            } catch (parseError) {
+                return null
+            }
+
+            if (responseData && responseData.data && responseData.data.contentInfo) {
+                return responseData.data.contentInfo.presentURL
+            }
+        }
+    }
+
+    /**
+     * 获取文件下载链接
+     *
+     * 通过contentId和linkID获取文件的直接下载链接（需要登录）
+     *
+     * @async
+     * @param {string} contentId - 文件内容ID
+     * @param {string} linkID - 分享链接ID
+     * @returns {Promise<string|undefined>} 下载链接，失败时返回undefined
+     */
+    async getDownload(contentId, linkID) {
+        // 下载功能需要账号和认证信息，按需获取
+        if (!this.account) {
+            this.account = await this.getPanEnv('移动云盘账号') || ''
+        }
+        if (!this.authorization && !this.cookie) {
+            this.cookie = await this.getPanEnv('移动云盘Cookie') || ''
+            if (this.cookie) {
+                const cookie = this.cookie.split(';')
+                cookie.forEach((item) => {
+                    if (item.indexOf('authorization') !== -1) {
+                        this.authorization = item.replace('authorization=', '')
+                    }
+                })
+            }
+        }
+
+        // 构造加密请求数据
+        let data = this.encrypt(JSON.stringify({
+            "dlFromOutLinkReqV3": {
+                "linkID": linkID,
+                "account": this.account,
+                "coIDLst": {
+                    "item": [contentId]
+                }
+            },
+            "commonAccountInfo": {
+                "account": this.account,
+                "accountType": 1
+            }
+        }))
+        // 发送API请求（需要authorization）
+        let resp = await req(this.baseUrl + 'dlFromOutLinkV3', {
+            method: 'POST',
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+                "Connection": "keep-alive",
+                "Accept": "application/json, text/plain, */*",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Content-Type": "application/json",
+                "accept-language": "zh,en-GB;q=0.9,en-US;q=0.8,en;q=0.7,zh-CN;q=0.6",
+                "authorization": this.authorization,
+                "content-type": "application/json;charset=UTF-8",
+                'hcy-cool-flag': '1',
+                'x-deviceinfo': '||3|12.27.0|chrome|136.0.0.0|189f4426ca008b9cbe9bf9bd79723d77||windows 10|1536X695|zh|||'
+            },
+            data: data,
+            responseType: ReqResponseType.plain
+        })
+        if (resp.code === 200) {
+            // 解密响应获取下载链接
+            let json = JSON.parse(this.decrypt(resp.data))
+            return json.data.redrUrl
+        }
+    }
+}
+
+panSubClasses.push(PanYun)
 // MARK: pikpak.js
 // 请勿直接修改，请修改 pikpak.js 文件
 // prettier-ignore
-// ignore
 
-import { cheerio, Crypto, Encrypt, JSONbig } from '../../../core/core/uz3lib.js'
-import {
-    PanType,
-    PanDataType,
-    PanMount,
-    PanMountListData,
-    PanPlayInfo,
-    PanVideoItem,
-    PanListDetail,
-    panSubClasses,
-} from '../panTools2.js'
-import { axios, qs, base64Decode, base64Encode } from './common.js'
-import {getEnv, setEnv, UZUtils} from "../../../core/core/uzUtils";
 
 // PikPak云盘
 // 作者：你猜
@@ -2789,6 +3515,26 @@ class PanPikPak {
         await setEnv(this.uzTag, key, value)
     }
 
+    /**
+     * 获取存储数据
+     *
+     * @param {string} key - 存储数据的键
+     * @returns {Promise<string>} 存储数据的值
+     */
+    async getStorage(key) {
+        return await UZUtils.getStorage({ key: key, uzTag: this.uzTag })
+    }
+
+    /**
+     * 保存数据
+     *
+     * @param {string} key - 存储数据的键
+     * @param {string} value - 存储数据的值
+     * @returns {Promise<void>} 保存数据成功返回 Promise 对象
+     */
+    async setStorage(key, value) {
+        await UZUtils.setStorage({ key: key, value: value, uzTag: this.uzTag })
+    }
     /**
      * 是否支持挂载
      *
@@ -2847,7 +3593,7 @@ class PanPikPak {
      * @returns {Promise<boolean>} 返回一个 Promise，resolve 返回 true 表示可以解析，false 表示不能解析
      */
     async canParse(args) {
-        return args.url.includes('mypikpak.com') || args.url.includes('magnet');
+        return args.url.includes('mypikpak.com') || args.url.includes('magnet')
     }
 
     /**
@@ -2857,7 +3603,7 @@ class PanPikPak {
      * @returns {Promise<PanListDetail>} 返回解析后的文件列表数据
      */
     async parseShareUrl(args) {
-        UZUtils.debugLog("parseShareUrl==========>"+args.url)
+        UZUtils.debugLog('parseShareUrl==========>' + args.url)
         return await this.getShareData(args.url)
     }
 
@@ -2867,26 +3613,26 @@ class PanPikPak {
      * @returns {Promise<PanPlayInfo>} 播放地址详情
      */
     async parseVideo(args) {
-        UZUtils.debugLog("parseVideo==========>"+args.data)
+        UZUtils.debugLog('parseVideo==========>' + args.data)
         return await this.getShareUrl(args.data)
     }
 
     /**
      * 清除Pan保存目录
      */
-    async clearPanSaveDir() {
-    }
+    async clearPanSaveDir() {}
 
     constructor() {
         this.regex = /https:\/\/mypikpak.com\/s\/(.*)\?act=play/
-        this.api = 'https://api-drive.mypikpak.com/drive/v1/share';
+        this.api = 'https://api-drive.mypikpak.com/drive/v1/share'
         this.share_api = 'https://keepshare.org/ai1uqv5a/'
-        this.x_client_id = "YUMx5nI8ZU8Ap8pm";
-        this.x_device_id = "9e8c121ebc0b409e85cc72cb2d424b54"
+        this.x_client_id = 'YUMx5nI8ZU8Ap8pm'
+        this.x_device_id = '9e8c121ebc0b409e85cc72cb2d424b54'
         this.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
-            "referer": "https://mypikpak.com/",
-            "accept-language": "zh-CN"
+            'User-Agent':
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+            referer: 'https://mypikpak.com/',
+            'accept-language': 'zh-CN',
         }
     }
     uzTag = ''
@@ -2900,23 +3646,30 @@ class PanPikPak {
     index = 0
     captcha_token = ''
 
-    async init(){
-        this.auth = await this.getPanEnv('pikpak_token')
-        UZUtils.debugLog('auth'+this.auth)
-        if(this.auth){
-            let exp = JSON.parse(Crypto.enc.Base64.parse(this.auth.split('.')[1]).toString(Crypto.enc.Utf8))
+    async init() {
+        this.auth = await this.getPanEnv('PikPakToken')
+        UZUtils.debugLog('auth' + this.auth)
+        if (this.auth) {
+            let exp = JSON.parse(
+                Crypto.enc.Base64.parse(this.auth.split('.')[1]).toString(
+                    Crypto.enc.Utf8
+                )
+            )
             let now = Math.floor(Date.now() / 1000)
             if (exp.exp < now) {
                 this.auth = null
                 UZUtils.debugLog('登录状态已过期,重新登录')
             } else {
-                UZUtils.debugLog('登录成功，继续使用,可使用时间截止到：' + (new Date(exp.exp * 1000)).toLocaleString())
+                UZUtils.debugLog(
+                    '登录成功，继续使用,可使用时间截止到：' +
+                    new Date(exp.exp * 1000).toLocaleString()
+                )
                 UZUtils.debugLog('PikPak token获取成功：' + this.auth)
             }
-        }else{
+        } else {
             await this.login()
         }
-        if(this.captcha_token===''){
+        if (this.captcha_token === '') {
             await this.getCaptcha()
         }
     }
@@ -2935,7 +3688,6 @@ class PanPikPak {
         } catch (error) {
             UZUtils.debugLog(error)
         }
-
     }
 
     async getPass_code_token(url) {
@@ -2943,13 +3695,15 @@ class PanPikPak {
         let ck = req_.headers['set-cookie']
         let pass_code_token = ''
         if (ck.length > 0) {
-            this.cookie = ck.map(it => {
-                let it_path = it.split(';')[0]
-                if (/passcode_token/.test(it_path)) {
-                    pass_code_token = it_path.split('=')[1]
-                }
-                return it_path
-            }).join('; ')
+            this.cookie = ck
+                .map((it) => {
+                    let it_path = it.split(';')[0]
+                    if (/passcode_token/.test(it_path)) {
+                        pass_code_token = it_path.split('=')[1]
+                    }
+                    return it_path
+                })
+                .join('; ')
         }
         return pass_code_token
     }
@@ -2959,196 +3713,257 @@ class PanPikPak {
         let ck = req_.headers['set-cookie']
         let pass_code_token = ''
         if (ck.length > 0) {
-            this.cookie = ck.map(it => {
-                let it_path = it.split(';')[0]
-                if (/passcode_token/.test(it_path)) {
-                    pass_code_token = it_path.split('=')[1]
-                }
-                return it_path
-            }).join('; ')
+            this.cookie = ck
+                .map((it) => {
+                    let it_path = it.split(';')[0]
+                    if (/passcode_token/.test(it_path)) {
+                        pass_code_token = it_path.split('=')[1]
+                    }
+                    return it_path
+                })
+                .join('; ')
         }
         return {
             redirect: req_.redirects[0].location,
-            pass_code_token: pass_code_token
+            pass_code_token: pass_code_token,
         }
-
     }
 
-    async getSize(size){
-        let fileSize = size/(1024*1024*1024)
-        return fileSize > 6;
+    async getSize(size) {
+        let fileSize = size / (1024 * 1024 * 1024)
+        return fileSize > 6
     }
 
-    async getSignCaptcha(){
+    async getSignCaptcha() {
         let data = JSON.stringify({
-            "client_id": "YUMx5nI8ZU8Ap8pm",
-            "action": "POST:/v1/auth/signin",
-            "device_id": this.x_device_id,
-            "captcha_token": "",
-            "meta": {
-                "email": this.email
-            }
-        });
-        let sign = await this.req_proxy('https://user.mypikpak.com/v1/shield/captcha/init','POST',{
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
-            'Content-Type': 'application/json',
-            'x-client-id': 'YUMx5nI8ZU8Ap8pm',
-            'x-device-id': this.x_device_id,
-        },data)
-        if(sign.status === 200){
+            client_id: 'YUMx5nI8ZU8Ap8pm',
+            action: 'POST:/v1/auth/signin',
+            device_id: this.x_device_id,
+            captcha_token: '',
+            meta: {
+                email: this.email,
+            },
+        })
+        let sign = await this.req_proxy(
+            'https://user.mypikpak.com/v1/shield/captcha/init',
+            'POST',
+            {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                'Content-Type': 'application/json',
+                'x-client-id': 'YUMx5nI8ZU8Ap8pm',
+                'x-device-id': this.x_device_id,
+            },
+            data
+        )
+        if (sign.status === 200) {
             return sign.data.captcha_token
         }
     }
 
-    async login(){
-        this.email = await this.getPanEnv('pikpak_username')
-        this.pass = await this.getPanEnv('pikpak_pass')
+    async login() {
+        this.email = await this.getPanEnv('PikPak邮箱')
+        this.pass = await this.getPanEnv('PikPak密码')
         let captcha_token = await this.getSignCaptcha()
         let data = JSON.stringify({
-            "username": this.email,
-            "password": this.pass,
-            "client_id": "YUMx5nI8ZU8Ap8pm"
-        });
-        let login_data = await this.req_proxy('https://user.mypikpak.com/v1/auth/signin','POST',{
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
-            'Content-Type': 'application/json',
-            'accept-language': 'zh-CN',
-            'x-captcha-token': captcha_token,
-            'x-client-id': 'YUMx5nI8ZU8Ap8pm',
-            'x-device-id': this.x_device_id,
-        },data)
-        if(login_data.status === 200){
-            UZUtils.debugLog("登陆成功==========>")
-            updatePanEnv('pikpak_token',login_data.data.token_type+' '+login_data.data.access_token)
-            updatePanEnv('pikpak_refresh_token',login_data.data.refresh_token)
+            username: this.email,
+            password: this.pass,
+            client_id: 'YUMx5nI8ZU8Ap8pm',
+        })
+        let login_data = await this.req_proxy(
+            'https://user.mypikpak.com/v1/auth/signin',
+            'POST',
+            {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                'Content-Type': 'application/json',
+                'accept-language': 'zh-CN',
+                'x-captcha-token': captcha_token,
+                'x-client-id': 'YUMx5nI8ZU8Ap8pm',
+                'x-device-id': this.x_device_id,
+            },
+            data
+        )
+        if (login_data.status === 200) {
+            UZUtils.debugLog('登陆成功==========>')
+            await this.updatePanEnv(
+                'PikPakToken',
+                login_data.data.token_type + ' ' + login_data.data.access_token
+            )
+            await this.setStorage(
+                'pikpak_refresh_token',
+                login_data.data.refresh_token
+            )
         }
     }
 
-    async getToken(){
-        this.refresh_token = await this.getPanEnv('pikpak_refresh_token')
+    async getToken() {
+        this.refresh_token = await this.getStorage('pikpak_refresh_token')
         let data = JSON.stringify({
-            "client_id": "YUMx5nI8ZU8Ap8pm",
-            "grant_type": "refresh_token",
-            "refresh_token": this.refresh_token
-        });
-        let token = await this.req_proxy('https://user.mypikpak.com/v1/auth/token','POST',{
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
-            'Content-Type': 'application/json',
-            'accept-language': 'zh,en-GB;q=0.9,en-US;q=0.8,en;q=0.7,zh-CN;q=0.6',
-            'x-client-id': 'YUMx5nI8ZU8Ap8pm',
-            'x-device-id': this.x_device_id,
-        }, data);
-        if(token.status === 200){
+            client_id: 'YUMx5nI8ZU8Ap8pm',
+            grant_type: 'refresh_token',
+            refresh_token: this.refresh_token,
+        })
+        let token = await this.req_proxy(
+            'https://user.mypikpak.com/v1/auth/token',
+            'POST',
+            {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                'Content-Type': 'application/json',
+                'accept-language':
+                    'zh,en-GB;q=0.9,en-US;q=0.8,en;q=0.7,zh-CN;q=0.6',
+                'x-client-id': 'YUMx5nI8ZU8Ap8pm',
+                'x-device-id': this.x_device_id,
+            },
+            data
+        )
+        if (token.status === 200) {
             UZUtils.debugLog('刷新token成功')
-            updatePanEnv('pikpak_token',token.data.token_type+' '+token.data.access_token)
-            updatePanEnv('pikpak_refresh_token',token.data.refresh_token)
+            await this.updatePanEnv(
+                'PikPakToken',
+                token.data.token_type + ' ' + token.data.access_token
+            )
+            await this.setStorage(
+                'pikpak_refresh_token',
+                token.data.refresh_token
+            )
         }
-        if(token.status === 400){
+        if (token.status === 400) {
             UZUtils.debugLog(token.data.details[1].message)
         }
     }
 
-    async trashEmpty(){
-        let delete_status = await this.req_proxy('https://api-drive.mypikpak.com/drive/v1/files/trash:empty','PATCH',{
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
-            'accept-language': 'zh-CN',
-            'authorization': this.auth,
-            'content-type': 'application/json',
-            'x-captcha-token': this.captcha_token,
-            'x-device-id': this.x_device_id,
-        })
-        if(delete_status.status === 200){
+    async trashEmpty() {
+        let delete_status = await this.req_proxy(
+            'https://api-drive.mypikpak.com/drive/v1/files/trash:empty',
+            'PATCH',
+            {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                'accept-language': 'zh-CN',
+                authorization: this.auth,
+                'content-type': 'application/json',
+                'x-captcha-token': this.captcha_token,
+                'x-device-id': this.x_device_id,
+            }
+        )
+        if (delete_status.status === 200) {
             UZUtils.debugLog('回收站清理完成')
         }
     }
 
-    async getFileList(){
-        let fileList = await this.req_proxy('https://api-drive.mypikpak.com/drive/v1/events?thumbnail_size=SIZE_MEDIUM&limit=100','GET',{
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
-            'accept-language': 'zh-CN',
-            'authorization': this.auth,
-            'x-captcha-token': this.captcha_token,
-            'x-device-id': this.x_device_id,
-        });
-        if(fileList.status === 200){
+    async getFileList() {
+        let fileList = await this.req_proxy(
+            'https://api-drive.mypikpak.com/drive/v1/events?thumbnail_size=SIZE_MEDIUM&limit=100',
+            'GET',
+            {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                'accept-language': 'zh-CN',
+                authorization: this.auth,
+                'x-captcha-token': this.captcha_token,
+                'x-device-id': this.x_device_id,
+            }
+        )
+        if (fileList.status === 200) {
             let ids = []
             let list = fileList.data.events
-            list.map(it=>{
+            list.map((it) => {
                 ids.push(it.file_id)
             })
             return ids
         }
     }
 
-    async deleteFile(ids){
+    async deleteFile(ids) {
         let data = JSON.stringify({
-            "ids": ids
-        });
-        let detele_status = await this.req_proxy('https://api-drive.mypikpak.com/drive/v1/files:batchTrash','POST',{
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
-            'Content-Type': 'application/json',
-            'authorization': this.auth,
-            'x-captcha-token': this.captcha_token,
-            'x-device-id': this.x_device_id,
-        }, data)
-        if(detele_status.status === 200){
+            ids: ids,
+        })
+        let detele_status = await this.req_proxy(
+            'https://api-drive.mypikpak.com/drive/v1/files:batchTrash',
+            'POST',
+            {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                'Content-Type': 'application/json',
+                authorization: this.auth,
+                'x-captcha-token': this.captcha_token,
+                'x-device-id': this.x_device_id,
+            },
+            data
+        )
+        if (detele_status.status === 200) {
             UZUtils.debugLog('删除文件成功')
         }
     }
 
-    async saveFile(share_id,file_ids,parent_id,pass_code_token){
+    async saveFile(share_id, file_ids, parent_id, pass_code_token) {
         let ids = await this.getFileList()
-        if(ids !== undefined){
-            if(ids.length>0){
+        if (ids !== undefined) {
+            if (ids.length > 0) {
                 await this.deleteFile(ids)
                 await this.getFileList()
                 await this.trashEmpty()
             }
             let data = JSON.stringify({
-                "share_id": share_id,
-                "pass_code_token": pass_code_token,
-                "file_ids": [
-                    file_ids
-                ],
-                "params": {
-                    "trace_file_ids": file_ids
+                share_id: share_id,
+                pass_code_token: pass_code_token,
+                file_ids: [file_ids],
+                params: {
+                    trace_file_ids: file_ids,
                 },
-                "ancestor_ids": (parent_id.split("|").filter(it => it !== '')) || [parent_id]
-            });
-            let save_status = await this.req_proxy('https://api-drive.mypikpak.com/drive/v1/share/restore','POST',{
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
-                'Content-Type': 'application/json',
-                'accept-language': 'zh-CN',
-                'authorization': this.auth,
-                'x-captcha-token': this.captcha_token,
-                'x-client-id': 'YUMx5nI8ZU8Ap8pm',
-                'x-device-id': this.x_device_id,
-            }, data);
-            if(save_status.status === 200 && save_status.data.share_status === "OK"){
-                UZUtils.debugLog("转存成功")
+                ancestor_ids: parent_id
+                    .split('|')
+                    .filter((it) => it !== '') || [parent_id],
+            })
+            let save_status = await this.req_proxy(
+                'https://api-drive.mypikpak.com/drive/v1/share/restore',
+                'POST',
+                {
+                    'User-Agent':
+                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                    'Content-Type': 'application/json',
+                    'accept-language': 'zh-CN',
+                    authorization: this.auth,
+                    'x-captcha-token': this.captcha_token,
+                    'x-client-id': 'YUMx5nI8ZU8Ap8pm',
+                    'x-device-id': this.x_device_id,
+                },
+                data
+            )
+            if (
+                save_status.status === 200 &&
+                save_status.data.share_status === 'OK'
+            ) {
+                UZUtils.debugLog('转存成功')
                 return true
             }
-            return false;
+            return false
         }
     }
 
-    async getSurl(url){
+    async getSurl(url) {
         this.link = url.trim()
-        let matches = this.regex.exec(url) === null ? /https:\/\/mypikpak.com\/s\/(.*)/.exec(url) : this.regex.exec(url);
+        let matches =
+            this.regex.exec(url) === null
+                ? /https:\/\/mypikpak.com\/s\/(.*)/.exec(url)
+                : this.regex.exec(url)
         let share_id = ''
         let parent_id = ''
         if (matches && matches[1]) {
-            if(matches[1].includes('/')){
+            if (matches[1].includes('/')) {
                 share_id = matches[1].split('/')[0]
                 parent_id = matches[1].split('/')[1]
-            }else {
+            } else {
                 share_id = matches[1]
             }
         }
         this.fileIds = parent_id
         this.parentId = parent_id
         return {
-            share_id,parent_id
+            share_id,
+            parent_id,
         }
     }
 
@@ -3156,212 +3971,276 @@ class PanPikPak {
         await this.init()
         let list = []
         if (url.startsWith('http')) {
-            UZUtils.debugLog("开始解析==========>")
+            UZUtils.debugLog('开始解析==========>')
             let pass_code_token = await this.getPass_code_token(url)
-            UZUtils.debugLog("pass_code_token==========>"+pass_code_token)
-            let {share_id, parent_id} = await this.getSurl(url)
-            UZUtils.debugLog("share_id, parent_id==========>"+share_id, parent_id)
+            UZUtils.debugLog('pass_code_token==========>' + pass_code_token)
+            let { share_id, parent_id } = await this.getSurl(url)
+            UZUtils.debugLog(
+                'share_id, parent_id==========>' + share_id,
+                parent_id
+            )
             list = await this.getShareList(share_id, parent_id, pass_code_token)
-            UZUtils.debugLog("list========>"+list)
+            UZUtils.debugLog('list========>' + list)
             return {
-                videos: list
+                videos: list,
             }
         }
         if (url.startsWith('magnet')) {
             url = this.share_api + url
-            let {redirect: link, pass_code_token: pass_code_token} = await this.getShareRedirect(url)
-            let {share_id, parent_id} = await this.getSurl(link)
+            let { redirect: link, pass_code_token: pass_code_token } =
+                await this.getShareRedirect(url)
+            let { share_id, parent_id } = await this.getSurl(link)
             list = await this.getShareList(share_id, parent_id, pass_code_token)
             return {
-                videos: list
+                videos: list,
             }
         }
-
     }
 
     async getShareList(share_id, parent_id, pass_code_token) {
-        let header = Object.assign({
-            'x-captcha-token':this.captcha_token,
-            'x-client-id':this.x_client_id,
-            'x-device-id':this.x_device_id
-        },this.headers)
-        let url = this.api + `/detail?limit=100&thumbnail_size=SIZE_LARGE&order=3&folders_first=true&share_id=${share_id}&parent_id=${parent_id}&pass_code_token=${pass_code_token}`
-        let data = await this.req_proxy(url,'get',header)
-        if(data.status === 200 && data.data.files.length > 0){
+        let header = Object.assign(
+            {
+                'x-captcha-token': this.captcha_token,
+                'x-client-id': this.x_client_id,
+                'x-device-id': this.x_device_id,
+            },
+            this.headers
+        )
+        let url =
+            this.api +
+            `/detail?limit=100&thumbnail_size=SIZE_LARGE&order=3&folders_first=true&share_id=${share_id}&parent_id=${parent_id}&pass_code_token=${pass_code_token}`
+        let data = await this.req_proxy(url, 'get', header)
+        if (data.status === 200 && data.data.files.length > 0) {
             let dirs = []
             let videos = []
-            data.data.files.map(item => {
+            data.data.files.map((item) => {
                 if (/folder/.test(item.kind) && item.mime_type === '') {
-                    if(this.index!==0){
-                        this.ids.map(it=>{
-                            return it+'|'+item.id
+                    if (this.index !== 0) {
+                        this.ids.map((it) => {
+                            return it + '|' + item.id
                         })
-                    }else {
-                        this.ids.push(this.fileIds+'|'+item.id)
+                    } else {
+                        this.ids.push(this.fileIds + '|' + item.id)
                     }
                     dirs.push({
-                        share_id:share_id,
-                        parent_id:item.id,
-                        pass_code_token:pass_code_token
+                        share_id: share_id,
+                        parent_id: item.id,
+                        pass_code_token: pass_code_token,
                     })
                 }
                 if (/file/.test(item.kind) && /video/.test(item.mime_type)) {
                     let parentId = ''
-                    if(this.index!==0){
-                        this.ids.map(it=>{
-                            if(it.indexOf(item.parent_id)){
+                    if (this.index !== 0) {
+                        this.ids.map((it) => {
+                            if (it.indexOf(item.parent_id)) {
                                 parentId = it
                             }
                         })
-                    }else {
+                    } else {
                         parentId = parent_id
                     }
                     videos.push({
-                        name:item.name,
+                        name: item.name,
                         panType: this.getPanType(),
-                        data:{
-                            name:item.name,
-                            share_id:share_id,
-                            file_id:item.id,
-                            parent_id:parentId,
-                            pass_code_token:pass_code_token,
-                            size:item.size
-                        }
-                        
+                        data: {
+                            name: item.name,
+                            share_id: share_id,
+                            file_id: item.id,
+                            parent_id: parentId,
+                            pass_code_token: pass_code_token,
+                            size: item.size,
+                        },
                     })
                 }
-            });
+            })
             this.index++
-            if(dirs.length === 0){
+            if (dirs.length === 0) {
                 this.fileIds = this.parentId
             }
-            let result = await Promise.all(dirs.map(async (it) => this.getShareList(it.share_id,it.parent_id,it.pass_code_token)))
-            result = result.filter(item => item !== undefined && item !== null).flat()
-            return [...videos, ...result.flat()];
+            let result = await Promise.all(
+                dirs.map(async (it) =>
+                    this.getShareList(
+                        it.share_id,
+                        it.parent_id,
+                        it.pass_code_token
+                    )
+                )
+            )
+            result = result
+                .filter((item) => item !== undefined && item !== null)
+                .flat()
+            return [...videos, ...result.flat()]
         }
     }
 
     async getCaptcha() {
         let data = JSON.stringify({
-            "client_id": "YUMx5nI8ZU8Ap8pm",
-            "action": "GET:/drive/v1/share/file_info",
-            "device_id": "9e8c121ebc0b409e85cc72cb2d424b54",
-            "captcha_token": "",
-            "meta": {
-                "captcha_sign": "1.00d38b84b3231b2ac78b41091c11e5ca",
-                "client_version": "undefined",
-                "package_name": "drive.mypikpak.com",
-                "user_id": "",
-                "timestamp": "1758527222654"
-            }
-        });
-        let captcha_data = await this.req_proxy('https://user.mypikpak.com/v1/shield/captcha/init','POST',{
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
-            'Content-Type': 'application/json',
-            'x-client-id': this.x_client_id,
-            'x-device-id': this.x_device_id
-        },data)
-        if(captcha_data.status === 200){
+            client_id: 'YUMx5nI8ZU8Ap8pm',
+            action: 'GET:/drive/v1/share/file_info',
+            device_id: '9e8c121ebc0b409e85cc72cb2d424b54',
+            captcha_token: '',
+            meta: {
+                captcha_sign: '1.00d38b84b3231b2ac78b41091c11e5ca',
+                client_version: 'undefined',
+                package_name: 'drive.mypikpak.com',
+                user_id: '',
+                timestamp: '1758527222654',
+            },
+        })
+        let captcha_data = await this.req_proxy(
+            'https://user.mypikpak.com/v1/shield/captcha/init',
+            'POST',
+            {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                'Content-Type': 'application/json',
+                'x-client-id': this.x_client_id,
+                'x-device-id': this.x_device_id,
+            },
+            data
+        )
+        if (captcha_data.status === 200) {
             this.captcha_token = captcha_data.data.captcha_token
         }
     }
 
-    async getMediasUrl(share_id,file_id,parent_id,pass_code_token){
-        if(this.auth===''){
+    async getMediasUrl(share_id, file_id, parent_id, pass_code_token) {
+        if (this.auth === '') {
             await this.login()
         }
-        let save_status = await this.saveFile(share_id,file_id,parent_id,pass_code_token)
-        if(save_status){
+        let save_status = await this.saveFile(
+            share_id,
+            file_id,
+            parent_id,
+            pass_code_token
+        )
+        if (save_status) {
             let ids = await this.getFileList()
-            UZUtils.debugLog("ids======>"+ids)
-            let file = await this.req_proxy(`https://api-drive.mypikpak.com/drive/v1/files/${ids[0]}?usage=FETCH`,'GET',{
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) PikPak/2.7.26.5224 Chrome/100.0.4896.160 Electron/18.3.15 Safari/537.36',
-                'Connection': 'keep-alive',
-                'Accept': '*/*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'accept-language': 'zh-CN',
-                'authorization': this.auth,
-                'x-captcha-token': this.captcha_token,
-                'x-device-id': this.x_device_id,
-            })
-            UZUtils.debugLog('地址请求状态'+file.status)
-            if(file.status === 200){
-                UZUtils.debugLog('原画'+[file.data.web_content_link,file.data?.links['application/octet-stream'].url])
-                return [file.data.web_content_link,file.data?.links['application/octet-stream'].url]
+            UZUtils.debugLog('ids======>' + ids)
+            let file = await this.req_proxy(
+                `https://api-drive.mypikpak.com/drive/v1/files/${ids[0]}?usage=FETCH`,
+                'GET',
+                {
+                    'User-Agent':
+                        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) PikPak/2.7.26.5224 Chrome/100.0.4896.160 Electron/18.3.15 Safari/537.36',
+                    Connection: 'keep-alive',
+                    Accept: '*/*',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'accept-language': 'zh-CN',
+                    authorization: this.auth,
+                    'x-captcha-token': this.captcha_token,
+                    'x-device-id': this.x_device_id,
+                }
+            )
+            UZUtils.debugLog('地址请求状态' + file.status)
+            if (file.status === 200) {
+                UZUtils.debugLog(
+                    '原画' +
+                    [
+                        file.data.web_content_link,
+                        file.data?.links['application/octet-stream'].url,
+                    ]
+                )
+                return [
+                    file.data.web_content_link,
+                    file.data?.links['application/octet-stream'].url,
+                ]
             }
         }
-
     }
 
-    async getShareUrl(data){
-        let {share_id,file_id,parent_id,pass_code_token,size} =data
+    async getShareUrl(data) {
+        let { share_id, file_id, parent_id, pass_code_token, size } = data
         await this.init()
         let save_flage = await this.getSize(size)
         let links = []
-        if(!save_flage){
-            links = await this.getMediasUrl(share_id,file_id,parent_id,pass_code_token)
+        if (!save_flage) {
+            links = await this.getMediasUrl(
+                share_id,
+                file_id,
+                parent_id,
+                pass_code_token
+            )
         }
-        UZUtils.debugLog("原画列表"+links)
-        let header = Object.assign({
-            'x-captcha-token':this.captcha_token,
-            'x-client-id':this.x_client_id,
-            'x-device-id':this.x_device_id
-        },this.headers)
-        let url = this.api+`/file_info?share_id=${share_id}&file_id=${file_id}&pass_code_token=${pass_code_token}`
-        let html = await this.req_proxy(url,'get',header)
+        UZUtils.debugLog('原画列表' + links)
+        let header = Object.assign(
+            {
+                'x-captcha-token': this.captcha_token,
+                'x-client-id': this.x_client_id,
+                'x-device-id': this.x_device_id,
+            },
+            this.headers
+        )
+        let url =
+            this.api +
+            `/file_info?share_id=${share_id}&file_id=${file_id}&pass_code_token=${pass_code_token}`
+        let html = await this.req_proxy(url, 'get', header)
         let urls = []
-        if(html.status === 200){
-            UZUtils.debugLog("html信息"+html.status)
-            UZUtils.debugLog("html信息"+html.data.file_info)
+        if (html.status === 200) {
+            UZUtils.debugLog('html信息' + html.status)
+            UZUtils.debugLog('html信息' + html.data.file_info)
             let list = html.data.file_info
-            if(list?.web_content_link!==''){
-                urls.push('原画1','https://web-vod-xdrive.mypikpak.com/ts_downloader?client_id=UElLUEFLX1dFQg&url='+encodeURIComponent(list.web_content_link))
-                urls.push('原画2','https://web-vod-xdrive.mypikpak.com/ts_downloader?client_id=UElLUEFLX1dFQg&url='+encodeURIComponent(list?.links['application/octet-stream'].url))
-            }else {
-                list.medias.forEach(media => {
-                    if(!save_flage &&media.media_name === '原画'){
-                        links.map((it,i)=>{
+            if (list?.web_content_link !== '') {
+                urls.push(
+                    '原画1',
+                    'https://web-vod-xdrive.mypikpak.com/ts_downloader?client_id=UElLUEFLX1dFQg&url=' +
+                    encodeURIComponent(list.web_content_link)
+                )
+                urls.push(
+                    '原画2',
+                    'https://web-vod-xdrive.mypikpak.com/ts_downloader?client_id=UElLUEFLX1dFQg&url=' +
+                    encodeURIComponent(
+                        list?.links['application/octet-stream'].url
+                    )
+                )
+            } else {
+                list.medias.forEach((media) => {
+                    if (!save_flage && media.media_name === '原画') {
+                        links.map((it, i) => {
                             urls.push({
-                                name:`原画${i+1}`,
-                                url:it
+                                name: `原画${i + 1}`,
+                                url: it,
                             })
                         })
-                    }else {
+                    } else {
                         urls.push({
-                            name:media.media_name,
-                            url:media.media_name === '原画'?media.link.url:'https://web-vod-xdrive.mypikpak.com/ts_downloader?client_id=UElLUEFLX1dFQg&url='+encodeURIComponent(media.link.url)
+                            name: media.media_name,
+                            url:
+                                media.media_name === '原画'
+                                    ? media.link.url
+                                    : 'https://web-vod-xdrive.mypikpak.com/ts_downloader?client_id=UElLUEFLX1dFQg&url=' +
+                                    encodeURIComponent(media.link.url),
                             // url:ENV.get('cf_domain')+media.link.url.replace('https://','')//cf反代加速，自行选择
                         })
                     }
-
                 })
                 return {
-                    urls:urls
+                    urls: urls,
                 }
             }
-        }else {
-            links.map((it,i)=>{
+        } else {
+            links.map((it, i) => {
                 urls.push({
-                    name:`原画${i+1}`,
-                    url:it
+                    name: `原画${i + 1}`,
+                    url: it,
                 })
             })
             return {
-                    urls:urls
-                }
+                urls: urls,
+            }
         }
     }
 
     _uuidv4() {
-        return "xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx".replace(/[xy]/g, e => {
-                const r = 16 * Math.random() | 0;
-                return ("x" === e ? r : 3 & r | 8).toString(16)
-            }
-        )
+        return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, (e) => {
+            const r = (16 * Math.random()) | 0
+            return ('x' === e ? r : (3 & r) | 8).toString(16)
+        })
     }
 }
 
 panSubClasses.push(PanPikPak)
+
 // MARK: quark_uc.js
 // 请勿直接修改，请修改 quark_uc.js 文件
 // prettier-ignore
